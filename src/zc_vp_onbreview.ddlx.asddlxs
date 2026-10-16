@@ -1,0 +1,160 @@
+// Metadata extension for ZC_VP_OnbReview (ADT: New > Metadata Extension).
+// Gives a Fiori elements List Report / Object Page straight from the service binding preview.
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: { typeName: 'Onboarding Application',
+                typeNamePlural: 'Onboarding Applications',
+                title:       { type: #STANDARD, value: 'CompanyName' },
+                description: { type: #STANDARD, value: 'ApplicationId' } },
+  presentationVariant: [{ sortOrder: [{ by: 'SubmittedAt', direction: #DESC }],
+                          visualizations: [{ type: #AS_LINEITEM }] }]
+}
+annotate entity ZC_VP_OnbReview with
+{
+  @UI.facet: [
+    { id: 'Application', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE,
+      label: 'Application', position: 10 },
+    { id: 'Company', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,
+      targetQualifier: 'Company', label: 'Company & Tax', position: 20 },
+    { id: 'Bank', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,
+      targetQualifier: 'Bank', label: 'Bank Details', position: 30 },
+    { id: 'Review', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,
+      targetQualifier: 'Review', label: 'Review', position: 40 },
+    { id: 'Documents', purpose: #STANDARD, type: #LINEITEM_REFERENCE,
+      targetElement: '_Document', label: 'Documents', position: 50 },
+    { id: 'History', purpose: #STANDARD, type: #LINEITEM_REFERENCE,
+      targetElement: '_History', label: 'Status History', position: 60 } ]
+  @UI.hidden: true
+  AppUuid;
+
+  @EndUserText.label: 'Application'
+  @UI: { lineItem: [ { position: 10, importance: #HIGH },
+                     { type: #FOR_ACTION, dataAction: 'startReview',          label: 'Start Review' },
+                     { type: #FOR_ACTION, dataAction: 'requestClarification', label: 'Request Clarification' },
+                     { type: #FOR_ACTION, dataAction: 'approveApplication',   label: 'Approve' },
+                     { type: #FOR_ACTION, dataAction: 'rejectApplication',    label: 'Reject' } ],
+         identification: [ { position: 10 },
+                     { type: #FOR_ACTION, dataAction: 'startReview',          label: 'Start Review' },
+                     { type: #FOR_ACTION, dataAction: 'requestClarification', label: 'Request Clarification' },
+                     { type: #FOR_ACTION, dataAction: 'approveApplication',   label: 'Approve' },
+                     { type: #FOR_ACTION, dataAction: 'rejectApplication',    label: 'Reject' } ],
+         selectionField: [ { position: 10 } ] }
+  ApplicationId;
+
+  @EndUserText.label: 'Status'
+  @UI: { lineItem: [ { position: 20, importance: #HIGH } ],
+         identification: [ { position: 20 } ],
+         selectionField: [ { position: 20 } ] }
+  Status;
+
+  @EndUserText.label: 'Company'
+  @UI: { lineItem: [ { position: 30, importance: #HIGH } ],
+         identification: [ { position: 30 } ],
+         selectionField: [ { position: 30 } ] }
+  CompanyName;
+
+  @EndUserText.label: 'Contact Person'
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  ContactPerson;
+
+  @EndUserText.label: 'E-Mail'
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  Email;
+
+  @EndUserText.label: 'Phone'
+  @UI.identification: [ { position: 60 } ]
+  Phone;
+
+  @EndUserText.label: 'Applicant User'
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 70 } ] }
+  ApplicantUser;
+
+  @EndUserText.label: 'Submitted At'
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 80 } ] }
+  SubmittedAt;
+
+  @EndUserText.label: 'Legal Name'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 10 } ]
+  LegalName;
+
+  @EndUserText.label: 'Company Type'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 20 } ]
+  CompanyType;
+
+  @EndUserText.label: 'Address'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 30 } ]
+  AddressLine;
+
+  @EndUserText.label: 'City'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 40 } ]
+  City;
+
+  @EndUserText.label: 'Region'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 50 } ]
+  Region;
+
+  @EndUserText.label: 'Country'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 60 } ]
+  Country;
+
+  @EndUserText.label: 'Postal Code'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 70 } ]
+  PostalCode;
+
+  @EndUserText.label: 'GSTIN'
+  @UI: { lineItem: [ { position: 80 } ], fieldGroup: [ { qualifier: 'Company', position: 80 } ] }
+  Gstin;
+
+  @EndUserText.label: 'PAN'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 90 } ]
+  Pan;
+
+  @EndUserText.label: 'MSME (Udyam) No.'
+  @UI.fieldGroup: [ { qualifier: 'Company', position: 100 } ]
+  MsmeNumber;
+
+  @EndUserText.label: 'Bank'
+  @UI.fieldGroup: [ { qualifier: 'Bank', position: 10 } ]
+  BankName;
+
+  @EndUserText.label: 'Account Holder'
+  @UI.fieldGroup: [ { qualifier: 'Bank', position: 20 } ]
+  AccountHolderName;
+
+  @EndUserText.label: 'Account Number'
+  @UI.fieldGroup: [ { qualifier: 'Bank', position: 30 } ]
+  BankAccountNumber;
+
+  @EndUserText.label: 'IFSC'
+  @UI.fieldGroup: [ { qualifier: 'Bank', position: 40 } ]
+  Ifsc;
+
+  @EndUserText.label: 'Reviewed By'
+  @UI.fieldGroup: [ { qualifier: 'Review', position: 10 } ]
+  ReviewedBy;
+
+  @EndUserText.label: 'Reviewed At'
+  @UI.fieldGroup: [ { qualifier: 'Review', position: 20 } ]
+  ReviewedAt;
+
+  @EndUserText.label: 'Review Comment'
+  @UI.fieldGroup: [ { qualifier: 'Review', position: 30 } ]
+  ReviewComment;
+
+  @EndUserText.label: 'Supplier'
+  @UI: { lineItem: [ { position: 90 } ], fieldGroup: [ { qualifier: 'Review', position: 40 } ] }
+  Supplier;
+
+  @UI.hidden: true
+  CurrentStep;
+  @UI.hidden: true
+  LocalCreatedBy;
+  @UI.hidden: true
+  LocalCreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+}

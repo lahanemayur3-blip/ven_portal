@@ -1,0 +1,32 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_VP_OnbReview alias Application
+{
+  use create;
+  use update;
+  use delete;
+
+  use action submitApplication;
+  use action startReview;
+  use action requestClarification;
+  use action approveApplication;
+  use action rejectApplication;
+
+  use association _Document { create; }
+  use association _History { create; }
+}
+
+define behavior for ZC_VP_OnbReviewDoc alias Document
+{
+  use update;
+  use delete;
+
+  use association _Application;
+}
+
+define behavior for ZC_VP_OnbReviewHist alias History
+{
+
+  use association _Application;
+}

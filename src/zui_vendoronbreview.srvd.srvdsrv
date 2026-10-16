@@ -1,0 +1,8 @@
+@EndUserText.label: 'Vendor onboarding (procurement reviewer)'
+define service ZUI_VENDORONBREVIEW {
+  expose ZC_VP_OnbReview      as Applications;
+  expose ZC_VP_OnbReviewDoc   as Documents;
+  expose ZC_VP_OnbReviewHist  as History;
+  expose ZI_VP_OnbCompanyType as CompanyTypes;
+  expose ZI_VP_OnbDocType     as DocumentTypes;
+}
