@@ -1,0 +1,13 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_VP_Asn alias Asn
+{
+  use create;
+  use association _Items { create; }
+}
+
+define behavior for ZC_VP_AsnItem alias AsnItem
+{
+  use association _Asn;
+}

@@ -1,0 +1,16 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_VP_Invoice alias Invoice
+{
+  use create;
+  use update;
+  use action resubmit;
+  use association _Items { create; }
+}
+
+define behavior for ZC_VP_InvoiceItem alias InvoiceItem
+{
+  use update;
+  use association _Invoice;
+}

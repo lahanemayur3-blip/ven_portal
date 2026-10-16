@@ -1,0 +1,31 @@
+projection;
+strict ( 2 );
+
+// Vendor-facing projection: reviewer actions are intentionally NOT exposed here.
+define behavior for ZC_VP_OnbApplication alias Application
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action submitApplication;
+
+  use association _Document { create; }
+  use association _History;
+
+}
+
+define behavior for ZC_VP_OnbDocument alias Document
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Application;
+}
+
+define behavior for ZC_VP_OnbHistory alias History
+{
+  use association _Application;
+}

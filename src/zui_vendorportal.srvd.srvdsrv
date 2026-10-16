@@ -1,0 +1,19 @@
+@EndUserText.label: 'Vendor Self-Service Portal'
+define service ZUI_VENDORPORTAL {
+  expose ZC_VP_VendorContext         as VendorContext;
+  expose ZC_VP_DashboardKpi          as DashboardKpis;
+  expose ZC_VP_Activity              as Activities;
+  expose ZC_VP_PurchaseOrder         as PurchaseOrders;
+  expose ZC_VP_PurchaseOrderItem     as PurchaseOrderItems;
+  expose ZC_VP_PoChangeRequest       as PoChangeRequests;
+  expose ZC_VP_PoAcknowledgement     as PoAcknowledgements;
+  expose ZC_VP_PoAcknowledgementItem as PoAcknowledgementItems;
+  expose ZC_VP_AsnEligibleItem       as AsnEligibleItems;
+  expose ZC_VP_ReceivingLocation     as ReceivingLocations;
+  expose ZC_VP_Asn                   as Asns;
+  expose ZC_VP_AsnItem               as AsnItems;
+  expose ZC_VP_InvoiceEligibleItem   as InvoiceEligibleItems;
+  expose ZC_VP_Invoice               as Invoices;
+  expose ZC_VP_InvoiceItem           as InvoiceItems;
+  expose ZC_VP_StatementItem         as StatementItems;
+}

@@ -1,0 +1,38 @@
+managed implementation in class zbp_i_vp_pochangerequest unique;
+strict ( 2 );
+
+define behavior for ZI_VP_PoChangeRequest alias PoChange
+persistent table zvp_po_chgreq
+with additional save
+lock master
+authorization master ( global )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+
+  field ( numbering : managed, readonly ) ChangeUUID;
+  field ( readonly ) Supplier, Status, BusinessComment, ProcessedBy, ProcessedAt,
+                     CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+  field ( mandatory : create ) PurchaseOrder, RequestText;
+
+  determination setDefaults on modify { create; }
+  validation validatePurchaseOrder on save { create; }
+
+  mapping for zvp_po_chgreq
+  {
+    ChangeUUID         = change_uuid;
+    PurchaseOrder      = purchase_order;
+    Supplier           = supplier;
+    RequestText        = request_text;
+    Status             = status;
+    BusinessComment    = business_comment;
+    ProcessedBy        = processed_by;
+    ProcessedAt        = processed_at;
+    CreatedBy          = local_created_by;
+    CreatedAt          = local_created_at;
+    LocalLastChangedBy = local_last_changed_by;
+    LocalLastChangedAt = local_last_changed_at;
+    LastChangedAt      = last_changed_at;
+  }
+}

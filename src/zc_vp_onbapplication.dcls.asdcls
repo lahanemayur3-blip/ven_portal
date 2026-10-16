@@ -1,0 +1,9 @@
+// Create three separate access controls in ADT (one per projection view).
+
+@EndUserText.label: 'Onboarding application projection'
+@MappingRole: true
+define role ZC_VP_OnbApplication {
+  grant select on ZC_VP_OnbApplication
+    where inheriting conditions from entity ZI_VP_OnbApplication;
+}
+

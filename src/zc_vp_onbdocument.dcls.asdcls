@@ -1,0 +1,5 @@
+@EndUserText.label: 'Onboarding document projection'
+@MappingRole: true
+define role ZC_VP_OnbDocument {
+  grant select on ZC_VP_OnbDocument
+    where inheriting conditions from entity ZI_VP_OnbDocument; }

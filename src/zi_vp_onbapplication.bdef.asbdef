@@ -1,0 +1,124 @@
+managed with additional save implementation in class zbp_i_vp_onbapplication unique;
+strict ( 2 );
+
+define behavior for ZI_VP_OnbApplication alias Application
+persistent table zvp_onb_app
+lock master
+authorization master ( global )
+etag master LocalLastChangedAt
+{
+  create;
+  update ( features : instance );
+  delete ( features : instance );
+  association _Document { create ( features : instance ); }
+  association _History { create; }
+
+  field ( numbering : managed, readonly ) AppUuid;
+  field ( readonly ) ApplicationId, ApplicantUser, Status,
+                     SubmittedAt, ReviewedBy, ReviewedAt, ReviewComment, Supplier,
+                     LocalCreatedBy, LocalCreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+
+  // "Save draft" = normal save with business status Draft; full checks run in submitApplication
+  determination setDefaults on modify { create; }
+  validation validateOneApplication on save { create; }
+
+  // vendor
+  action ( features : instance ) submitApplication result [1] $self;
+
+  // procurement reviewer (expose only in a reviewer projection / service)
+  action ( features : instance ) startReview result [1] $self;
+  action ( features : instance ) requestClarification parameter ZA_VP_OnbComment result [1] $self;
+  action ( features : instance ) approveApplication parameter ZA_VP_OnbApprove result [1] $self;
+  action ( features : instance ) rejectApplication parameter ZA_VP_OnbComment result [1] $self;
+
+  mapping for zvp_onb_app
+    {
+      AppUuid            = app_uuid;
+      ApplicationId      = application_id;
+      ApplicantUser      = applicant_user;
+      Status             = status;
+      CurrentStep        = current_step;
+      CompanyName        = company_name;
+      ContactPerson      = contact_person;
+      Email              = email;
+      Phone              = phone;
+      LegalName          = legal_name;
+      CompanyType        = company_type;
+      AddressLine        = address_line;
+      City               = city;
+      Region             = region;
+      Country            = country;
+      PostalCode         = postal_code;
+      Gstin              = gstin;
+      Pan                = pan;
+      MsmeNumber         = msme_number;
+      BankName           = bank_name;
+      AccountHolderName  = account_holder;
+      BankAccountNumber  = bank_account;
+      Ifsc               = ifsc;
+      SubmittedAt        = submitted_at;
+      ReviewedBy         = reviewed_by;
+      ReviewedAt         = reviewed_at;
+      ReviewComment      = review_comment;
+      Supplier           = supplier;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+    }
+}
+
+define behavior for ZI_VP_OnbDocument alias Document
+persistent table zvp_onb_doc
+lock dependent by _Application
+authorization dependent by _Application
+etag master LocalLastChangedAt
+{
+  update ( features : instance );
+  delete ( features : instance );
+
+  field ( numbering : managed, readonly ) DocUuid;
+  field ( readonly ) AppUuid, LocalCreatedBy, LocalCreatedAt, LocalLastChangedBy, LocalLastChangedAt;
+  field ( mandatory : create ) DocType;
+
+  association _Application;
+
+  mapping for zvp_onb_doc
+    {
+      DocUuid            = doc_uuid;
+      AppUuid            = app_uuid;
+      DocType            = doc_type;
+      DocName            = doc_name;
+      FileContent        = file_content;
+      MimeType           = mime_type;
+      FileName           = file_name;
+      ExpiryDate         = expiry_date;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+    }
+}
+
+define behavior for ZI_VP_OnbHistory alias History
+persistent table zvp_onb_hist
+lock dependent by _Application
+authorization dependent by _Application
+{
+  field ( numbering : managed, readonly ) HistUuid;
+  field ( readonly ) AppUuid, ChangedBy, ChangedAt;
+
+  association _Application;
+
+  mapping for zvp_onb_hist
+    {
+      HistUuid   = hist_uuid;
+      AppUuid    = app_uuid;
+      StatusFrom = status_from;
+      StatusTo   = status_to;
+      Comment1    = comment1;
+      ChangedBy  = changed_by;
+      ChangedAt  = changed_at;
+    }
+}

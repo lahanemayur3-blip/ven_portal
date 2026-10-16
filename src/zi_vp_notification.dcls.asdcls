@@ -1,0 +1,6 @@
+@EndUserText.label: 'Notifications - own user only'
+@MappingRole: true
+define role ZI_VP_Notification {
+  grant select on ZI_VP_Notification
+    where UserId = aspect user;
+}

@@ -1,0 +1,6 @@
+@EndUserText.label: 'Onboarding application - own application only'
+@MappingRole: true
+define role ZI_VP_OnbApplication {
+  grant select on ZI_VP_OnbApplication
+    where ApplicantUser = aspect user;
+}

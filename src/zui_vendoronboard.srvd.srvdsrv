@@ -1,0 +1,11 @@
+@EndUserText.label: 'Vendor onboarding (vendor UI)'
+define service ZUI_VENDORONBOARD {
+  expose ZC_VP_OnbApplication as Applications;
+  expose ZC_VP_OnbDocument    as Documents;
+  expose ZC_VP_OnbHistory     as History;
+  expose ZI_VP_OnbDocType     as DocumentTypes;
+  expose ZI_VP_OnbCompanyType as CompanyTypes;
+  expose ZI_VP_CountryVH      as Countries;
+  expose ZI_VP_RegionVH       as Regions;
+  expose ZI_VP_Notification   as Notifications;
+}

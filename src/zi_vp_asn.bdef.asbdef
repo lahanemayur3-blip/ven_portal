@@ -1,0 +1,80 @@
+managed implementation in class zbp_i_vp_asn unique;
+strict ( 2 );
+
+define behavior for ZI_VP_Asn alias Asn
+persistent table zvp_asn_hdr
+with additional save
+lock master
+authorization master ( global )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+
+  field ( numbering : managed, readonly ) AsnUUID;
+  field ( readonly ) AsnNumber, Supplier, Status, PoCount, ItemCount, ReceivingPlantName,
+  CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+  field ( mandatory : create ) DispatchDate, ExpectedDeliveryDate, Transporter, VehicleNumber, ReceivingPlant;
+
+  association _Items { create; }
+
+  determination setDefaults on modify { create; }
+  determination calculateCounts on modify { create; }
+  validation validateHeader on save { create; }
+
+  mapping for zvp_asn_hdr
+    {
+      AsnUUID              = asn_uuid;
+      AsnNumber            = asn_number;
+      Supplier             = supplier;
+      DispatchDate         = dispatch_date;
+      ExpectedDeliveryDate = expected_delivery_date;
+      Transporter          = transporter;
+      VehicleNumber        = vehicle_number;
+      LrNumber             = lr_number;
+      PackageCount         = package_count;
+      WeightKg             = weight_kg;
+      SendingLocation      = sending_location;
+      ReceivingPlant       = receiving_plant;
+      ReceivingPlantName   = receiving_plant_name;
+      PoCount              = po_count;
+      ItemCount            = item_count;
+      Status               = status;
+      FileName             = file_name;
+      MimeType             = mime_type;
+      FileContent          = file_content;
+      CreatedBy            = local_created_by;
+      CreatedAt            = local_created_at;
+      LocalLastChangedBy   = local_last_changed_by;
+      LocalLastChangedAt   = local_last_changed_at;
+      LastChangedAt        = last_changed_at;
+    }
+}
+
+define behavior for ZI_VP_AsnItem alias AsnItem
+persistent table zvp_asn_itm
+lock dependent by _Asn
+authorization dependent by _Asn
+{
+  internal update;
+  field ( numbering : managed, readonly ) AsnItemUUID;
+  field ( readonly ) AsnUUID, Material, MaterialDescription, Unit;   // taken from the PO item
+  field ( mandatory : create ) PurchaseOrder, PurchaseOrderItem, Quantity;
+
+  association _Asn;
+
+  determination fillItem on modify { create; }
+  validation validateItem on save { create; }
+
+  mapping for zvp_asn_itm
+    {
+      AsnItemUUID         = asn_item_uuid;
+      AsnUUID             = asn_uuid;
+      PurchaseOrder       = purchase_order;
+      PurchaseOrderItem   = purchase_order_item;
+      Material            = material;
+      MaterialDescription = material_text;
+      Quantity            = quantity;
+      Unit                = unit;
+    }
+}

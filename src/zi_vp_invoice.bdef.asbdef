@@ -1,0 +1,87 @@
+managed implementation in class zbp_i_vp_invoice unique;
+strict ( 2 );
+
+define behavior for ZI_VP_Invoice alias Invoice
+persistent table zvp_inv_hdr
+with additional save
+lock master
+authorization master ( global )
+etag master LocalLastChangedAt
+{
+  create;
+  update ( features : instance );          // editable only while Status = 'Rejected'
+
+  field ( numbering : managed, readonly ) InvoiceUUID;
+  field ( readonly ) InvoiceId, Supplier, NetAmount, TaxAmount, GrossAmount, Status,
+                     RejectionReason, SupplierInvoice, SupplierInvoiceFiscalYear, PaymentReference,
+                     CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+  field ( readonly : update ) PurchaseOrder;
+  field ( mandatory : create ) VendorInvoiceNumber, PurchaseOrder, InvoiceDate, DueDate;
+
+  action ( features : instance ) resubmit result [1] $self;   // Rejected -> Submitted
+
+  association _Items { create; }
+
+  determination setDefaults on modify { create; }
+  validation validateHeader on save { create; update; }
+
+  mapping for zvp_inv_hdr
+  {
+    InvoiceUUID               = invoice_uuid;
+    InvoiceId                 = invoice_id;
+    Supplier                  = supplier;
+    VendorInvoiceNumber       = vendor_invoice_number;
+    PurchaseOrder             = purchase_order;
+    InvoiceDate               = invoice_date;
+    DueDate                   = due_date;
+    NetAmount                 = net_amount;
+    TaxAmount                 = tax_amount;
+    GrossAmount               = gross_amount;
+    Currency                  = currency;
+    Status                    = status;
+    RejectionReason           = rejection_reason;
+    SupplierInvoice           = supplier_invoice;
+    SupplierInvoiceFiscalYear = supplier_invoice_fiscal_year;
+    PaymentReference          = payment_reference;
+    FileName                  = file_name;
+    MimeType                  = mime_type;
+    FileContent               = file_content;
+    CreatedBy                 = local_created_by;
+    CreatedAt                 = local_created_at;
+    LocalLastChangedBy        = local_last_changed_by;
+    LocalLastChangedAt        = local_last_changed_at;
+    LastChangedAt             = last_changed_at;
+  }
+}
+
+define behavior for ZI_VP_InvoiceItem alias InvoiceItem
+persistent table zvp_inv_itm
+lock dependent by _Invoice
+authorization dependent by _Invoice
+{
+  update ( features : instance );
+
+  field ( numbering : managed, readonly ) InvoiceItemUUID;
+  field ( readonly ) InvoiceUUID, NetAmount, Unit;
+  field ( readonly : update ) PurchaseOrderItem;
+  field ( mandatory : create ) PurchaseOrderItem, Quantity, Rate , Currency;
+
+  association _Invoice;
+
+  determination calculateAmounts on modify { create; field Quantity, Rate, TaxPercent; }
+  validation validateItem on save { create; update; }
+
+  mapping for zvp_inv_itm
+  {
+    InvoiceItemUUID   = inv_item_uuid;
+    InvoiceUUID       = invoice_uuid;
+    PurchaseOrderItem = purchase_order_item;
+    Description       = description;
+    Quantity          = quantity;
+    Unit              = unit;
+    Rate              = rate;
+    TaxPercent        = tax_percent;
+    NetAmount         = net_amount;
+    Currency          = currency;
+  }
+}

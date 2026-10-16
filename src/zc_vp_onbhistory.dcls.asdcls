@@ -1,0 +1,6 @@
+@EndUserText.label: 'Onboarding history projection'
+@MappingRole: true
+define role ZC_VP_OnbHistory {
+  grant select on ZC_VP_OnbHistory
+    where inheriting conditions from entity ZI_VP_OnbHistory;
+}

@@ -1,0 +1,65 @@
+managed implementation in class zbp_i_vp_poacknowledgement unique;
+strict ( 2 );
+
+define behavior for ZI_VP_PoAcknowledgement alias PoAck
+persistent table zvp_po_ack
+with additional save
+lock master
+authorization master ( global )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+
+  field ( numbering : managed, readonly ) AckUUID;
+  field ( readonly ) Supplier, AllMatch, Status,
+  CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+  field ( mandatory : create ) PurchaseOrder;
+
+  association _Items { create; }
+
+  determination setDefaults on modify { create; }
+  validation validatePurchaseOrder on save { create; }
+
+  mapping for zvp_po_ack
+    {
+      AckUUID            = ack_uuid;
+      PurchaseOrder      = purchase_order;
+      Supplier           = supplier;
+      AllMatch           = all_match;
+      Status             = ack_status;
+      CreatedBy          = local_created_by;
+      CreatedAt          = local_created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+    }
+}
+
+define behavior for ZI_VP_PoAcknowledgementItem alias PoAckItem
+persistent table zvp_po_ack_itm
+lock dependent by _Ack
+authorization dependent by _Ack
+{
+  update;
+
+  field ( numbering : managed, readonly ) AckItemUUID;
+  field ( readonly ) AckUUID, OrderedQuantity, OrderUnit, OrderedDate;
+  field ( mandatory : create ) PurchaseOrderItem, ConfirmedQuantity, ConfirmedDate;
+
+  association _Ack;
+
+  validation validateItem on save { create; }
+
+  mapping for zvp_po_ack_itm
+    {
+      AckItemUUID       = ack_item_uuid;
+      AckUUID           = ack_uuid;
+      PurchaseOrderItem = purchase_order_item;
+      OrderedQuantity   = ordered_quantity;
+      ConfirmedQuantity = confirmed_quantity;
+      OrderUnit         = order_unit;
+      OrderedDate       = ordered_date;
+      ConfirmedDate     = confirmed_date;
+    }
+}
